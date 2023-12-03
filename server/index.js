@@ -49,6 +49,20 @@ app.get('/schedules', (req, res) => {
 	}
 });
 
+app.get('/check-status', (req, res) => {
+	const { school_id_no, first_name, last_name, middle_name } = req.query;
+	let sql = `SELECT * FROM User WHERE school_id_no = ? AND first_name = ? AND last_name = ? AND middle_name = ?`;
+	try {
+		db.all(sql, [school_id_no, first_name, last_name, middle_name], (err, rows) => {
+			if (err) return res.status(300).json({ error: err });
+			if (rows === null) return res.status(404).json({ error: 'the appointment is not found.' });
+			return res.status(200).json({ data: rows });
+		});
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
 app.post('/create-schedules', (req, res) => {
 	try {
 		const { first_name, last_name, middle_name, contact_no, section, school_id_no, documents } = req.body;

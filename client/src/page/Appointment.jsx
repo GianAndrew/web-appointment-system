@@ -34,7 +34,6 @@ const Appointment = () => {
 			school_id_no: schoolIdRef.current.value,
 			documents: documents,
 		};
-		console.log(Object.keys(documents).find((docs) => documents[docs] === true));
 
 		const res = await fetch('http://localhost:3001/create-schedules', {
 			method: 'POST',
@@ -53,7 +52,6 @@ const Appointment = () => {
 			});
 			setIsOpen(false);
 		}
-		console.log(res.json());
 	};
 
 	return (
@@ -125,7 +123,7 @@ const Appointment = () => {
 												})
 												.map((d, index) => (
 													<p key={index} className='text-gray-900 flex flex-col uppercase font-semibold'>
-														{d}
+														- {d}
 													</p>
 												))}
 										</div>
