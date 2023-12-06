@@ -23,18 +23,20 @@ const CheckStatus = () => {
 	const navigate = useNavigate();
 
 	const handleCheckStatus = async () => {
-		const res = await fetch(
-			`http://localhost:3001/check-status?school_id_no=${information.school_id_no}&first_name=${information.first_name}&last_name=${information.last_name}&middle_name=${information.middle_name}`,
-			{
-				method: 'GET',
-			}
-		);
-		const { data } = await res.json();
+		try {
+			const res = await fetch(
+				`http://localhost:3001/check-status?school_id_no=${information.school_id_no}&first_name=${information.first_name}&last_name=${information.last_name}&middle_name=${information.middle_name}`,
+				{
+					method: 'GET',
+				}
+			);
+			const { data } = await res.json();
 
-		if (res.ok) {
-			setIsOpen(true);
-			setAppointmentData({ ...data[0], documents: JSON.parse(data[0].documents) });
-		} else {
+			if (res.ok) {
+				setIsOpen(true);
+				setAppointmentData({ ...data[0], documents: JSON.parse(data[0]?.documents) });
+			}
+		} catch (error) {
 			mySwal.fire({
 				title: 'Error',
 				icon: 'error',
@@ -115,7 +117,7 @@ const CheckStatus = () => {
 									<div className='flex flex-col ms-10'>
 										{Object.keys(appointmentData?.documents)
 											.filter((docs) => {
-												return appointmentData.documents[docs] === true;
+												return appointmentData?.documents[docs] === true;
 											})
 											.map((d, index) => (
 												<p key={index} className='text-gray-900 flex flex-col uppercase font-semibold'>
