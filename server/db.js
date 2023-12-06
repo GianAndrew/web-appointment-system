@@ -10,7 +10,6 @@ const sql = `CREATE TABLE "User" (
 	"last_name"	TEXT,
 	"middle_name"	TEXT,
 	"section"	TEXT,
-	"year_level"	INTEGER,
 	"school_id_no"	TEXT,
 	"contact_no"	TEXT,
 	"documents"	TEXT,
