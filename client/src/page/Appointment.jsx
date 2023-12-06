@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserLarge, faFileInvoice, faSchool } from '@fortawesome/free-solid-svg-icons';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -10,14 +10,20 @@ const mySwal = withReactContent(Swal);
 const Appointment = () => {
 	const navigate = useNavigate();
 	const [documents, setDocuments] = useState({ form137: false, form138: false, coe: false, cog: false });
+	const [information, setInformation] = useState({
+		first_name: '',
+		last_name: '',
+		middle_name: '',
+		section: '',
+		contact_no: '',
+		school_id_no: '',
+	});
 	const [isOpen, setIsOpen] = useState(false);
 
-	const firstNameRef = useRef();
-	const middleNameRef = useRef();
-	const lastNameRef = useRef();
-	const sectionRef = useRef();
-	const contactNoRef = useRef();
-	const schoolIdRef = useRef();
+	const handleInput = (e) => {
+		const { name, value } = e.target;
+		setInformation((info) => ({ ...info, [name]: value }));
+	};
 
 	const handleCheckBox = (e) => {
 		const { name, checked } = e.target;
@@ -25,16 +31,7 @@ const Appointment = () => {
 	};
 
 	const submitBtn = async () => {
-		const value = {
-			first_name: firstNameRef.current.value,
-			last_name: lastNameRef.current.value,
-			middle_name: middleNameRef.current.value,
-			section: sectionRef.current.value,
-			contact_no: contactNoRef.current.value,
-			school_id_no: schoolIdRef.current.value,
-			documents: documents,
-		};
-
+		const value = { ...information, documents };
 		const res = await fetch('http://localhost:3001/create-schedules', {
 			method: 'POST',
 			body: JSON.stringify(value),
@@ -56,102 +53,110 @@ const Appointment = () => {
 
 	return (
 		<>
-			<section className=' flex h-screen bg-gray-50'>
-				{isOpen ? (
-					<div className='fixed flex justify-center items-center bg-slate-500/50 w-full h-full'>
-						<div className='relative w-full max-w-lg max-h-full'>
-							<div className='relative bg-white rounded-lg shadow'>
-								<div className='flex items-center justify-between p-4 md:p-5 border-b rounded-t'>
-									<h3 className='text-xl font-medium text-gray-900'>Preview</h3>
-									<button
-										type='button'
-										className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center'
-										onClick={() => setIsOpen(!isOpen)}
-									>
-										<svg className='w-3 h-3' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 14 14'>
-											<path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6' />
-										</svg>
-										<span className='sr-only'>Close modal</span>
-									</button>
-								</div>
+			{isOpen ? (
+				<div className='fixed flex justify-center items-center bg-slate-500/50 w-full h-full'>
+					<div className='relative w-full max-w-lg max-h-full'>
+						<div className='relative bg-white rounded-lg shadow'>
+							<div className='flex items-center justify-between p-4 md:p-5 border-b rounded-t'>
+								<h3 className='text-xl font-medium text-gray-900'>Preview</h3>
+								<button
+									type='button'
+									className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center'
+									onClick={() => setIsOpen(!isOpen)}
+								>
+									<svg className='w-3 h-3' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 14 14'>
+										<path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6' />
+									</svg>
+									<span className='sr-only'>Close modal</span>
+								</button>
+							</div>
 
-								{/* modal content */}
-								<div className='p-4 md:p-5 space-y-4'>
-									<div className='flex flex-col text-gray-800'>
-										<div className='flex justify-start items-center gap-2'>
-											<FontAwesomeIcon icon={faUserLarge} className='text-blue-700 p-2 rounded-md bg-blue-100' />
-											<span className='font-bold'>Information</span>
-										</div>
-										<div className='ms-8'>
-											<div className='flex flex-row p-2 gap-2'>
-												<span className='font-semibold'>Name: </span>
-												<span className='uppercase'>
-													{lastNameRef.current.value}, {firstNameRef.current.value} {middleNameRef.current.value}
-												</span>
-											</div>
-											<div className='flex flex-row p-2 gap-2'>
-												<span className='font-semibold'>Contact: </span>
-												<span className='uppercase'>{contactNoRef.current.value}</span>
-											</div>
-										</div>
+							{/* modal content */}
+							<div className='p-4 md:p-5 space-y-4'>
+								<div className='flex flex-col text-gray-800'>
+									<div className='flex justify-start items-center gap-2'>
+										<FontAwesomeIcon icon={faUserLarge} className='text-blue-700 p-2 rounded-md bg-blue-100' />
+										<span className='font-bold'>Information</span>
 									</div>
-									<div className='flex flex-col text-gray-800'>
-										<div className='flex justify-start items-center gap-2'>
-											<FontAwesomeIcon icon={faSchool} className='text-blue-700 p-2 rounded-md bg-blue-100' />
-											<span className='font-bold'>School Information</span>
+									<div className='ms-8'>
+										<div className='flex flex-row p-2 gap-2'>
+											<span className='font-semibold'>Name: </span>
+											<span className='uppercase'>
+												{information.last_name}, {information.first_name} {information.middle_name}
+											</span>
 										</div>
-										<div className='ms-8'>
-											<div className='flex flex-row p-2 gap-2'>
-												<span className='font-semibold'>Section: </span>
-												<span className='uppercase'>{sectionRef.current.value}</span>
-											</div>
-											<div className='flex flex-row p-2 gap-2'>
-												<span className='font-semibold'>School ID: </span>
-												<span className='uppercase'>{schoolIdRef.current.value}</span>
-											</div>
-										</div>
-									</div>
-									<div className='flex flex-col text-gray-800'>
-										<div className='flex justify-start items-center gap-2'>
-											<FontAwesomeIcon icon={faFileInvoice} className='text-blue-700 p-2 rounded-md bg-blue-100' />
-											<span className='font-bold'>Documents</span>
-										</div>
-										<div className='flex flex-col ms-10'>
-											{Object.keys(documents)
-												.filter((docs) => {
-													return documents[docs] === true;
-												})
-												.map((d, index) => (
-													<p key={index} className='text-gray-900 flex flex-col uppercase font-semibold'>
-														- {d}
-													</p>
-												))}
+										<div className='flex flex-row p-2 gap-2'>
+											<span className='font-semibold'>Contact: </span>
+											<span className='uppercase'>{information.contact_no}</span>
 										</div>
 									</div>
 								</div>
+								<div className='flex flex-col text-gray-800'>
+									<div className='flex justify-start items-center gap-2'>
+										<FontAwesomeIcon icon={faSchool} className='text-blue-700 p-2 rounded-md bg-blue-100' />
+										<span className='font-bold'>School Information</span>
+									</div>
+									<div className='ms-8'>
+										<div className='flex flex-row p-2 gap-2'>
+											<span className='font-semibold'>Section: </span>
+											<span className='uppercase'>{information.section}</span>
+										</div>
+										<div className='flex flex-row p-2 gap-2'>
+											<span className='font-semibold'>School ID: </span>
+											<span className='uppercase'>{information.school_id_no}</span>
+										</div>
+									</div>
+								</div>
+								<div className='flex flex-col text-gray-800'>
+									<div className='flex justify-start items-center gap-2'>
+										<FontAwesomeIcon icon={faFileInvoice} className='text-blue-700 p-2 rounded-md bg-blue-100' />
+										<span className='font-bold'>Documents</span>
+									</div>
+									<div className='flex flex-col ms-10'>
+										{Object.keys(documents)
+											.filter((docs) => {
+												return documents[docs] === true;
+											})
+											.map((d, index) => (
+												<p key={index} className='text-gray-900 flex flex-col uppercase font-semibold'>
+													- {d}
+												</p>
+											))}
+									</div>
+								</div>
+							</div>
 
-								<div className='flex flex-row-reverse items-center gap-2 p-4 md:p-5 border-t border-gray-200 rounded-b'>
-									<button
-										type='button'
-										className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center '
-										onClick={submitBtn}
-									>
-										Save
-									</button>
-									<button
-										type='button'
-										className='ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900'
-										onClick={() => setIsOpen(!isOpen)}
-									>
-										Cancel
-									</button>
-								</div>
+							<div className='flex flex-row-reverse items-center gap-2 p-4 md:p-5 border-t border-gray-200 rounded-b'>
+								<button
+									type='button'
+									className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center '
+									onClick={submitBtn}
+								>
+									Save
+								</button>
+								<button
+									type='button'
+									className='ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900'
+									onClick={() => setIsOpen(!isOpen)}
+								>
+									Cancel
+								</button>
 							</div>
 						</div>
 					</div>
-				) : null}
+				</div>
+			) : null}
+			<section className='flex flex-col h-screen bg-gray-50'>
+				<nav className='bg-white w-full shadow-sm'>
+					<div className='container flex flex-wrap items-center justify-between mx-auto p-4'>
+						<p className='self-center text-2xl font-semibold whitespace-nowrap'>
+							Appoint.<span className='text-blue-700'>me</span>
+						</p>
+					</div>
+				</nav>
+
 				<div className='container mx-auto'>
-					<div className='max-w-5xl h-full mx-auto px-4 lg:px-0 flex flex-col justify-center items-center'>
+					<div className='mt-10 max-w-5xl h-full mx-auto px-4 lg:px-0 flex flex-col justify-center items-center'>
 						<div className='w-full p-4 mb-2'>
 							<h1 className='text-4xl font-bold text-blue-700'>Make an Appointment</h1>
 							<p className='text-lg text-gray-600'>Fill up the inputs with your information.</p>
@@ -164,24 +169,24 @@ const Appointment = () => {
 								</p>
 								<div className='flex mt-1 space-x-2'>
 									<input
-										ref={lastNameRef}
+										onChange={handleInput}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 uppercase'
 										type='text'
-										name='lastname'
+										name='last_name'
 										placeholder='Last name'
 									/>
 									<input
-										ref={firstNameRef}
+										onChange={handleInput}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 uppercase'
 										type='text'
-										name='firstname'
+										name='first_name'
 										placeholder='First name'
 									/>
 									<input
-										ref={middleNameRef}
+										onChange={handleInput}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 uppercase'
 										type='text'
-										name='middlename'
+										name='middle_name'
 										placeholder='middle name'
 									/>
 								</div>
@@ -193,24 +198,24 @@ const Appointment = () => {
 								</p>
 								<div className='flex mt-1 space-x-2'>
 									<input
-										ref={sectionRef}
+										onChange={handleInput}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 uppercase'
 										type='text'
 										name='section'
 										placeholder='Section'
 									/>
 									<input
-										ref={schoolIdRef}
+										onChange={handleInput}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 uppercase'
 										type='text'
-										name='schoolId'
+										name='school_id_no'
 										placeholder='School ID'
 									/>
 									<input
-										ref={contactNoRef}
+										onChange={handleInput}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 uppercase'
 										type='number'
-										name='contactNumber'
+										name='contact_no'
 										placeholder='Contact Number'
 									/>
 								</div>

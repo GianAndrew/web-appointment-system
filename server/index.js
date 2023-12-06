@@ -10,7 +10,14 @@ const db = new sqlite.Database('./appointment.db', sqlite.OPEN_READWRITE, (err) 
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(
+	cors({
+		origin: '*',
+		credentials: true, //access-control-allow-credentials:true
+		optionSuccessStatus: 200,
+		methods: ['POST', 'GET', 'PUT', 'DELETE'],
+	})
+);
 app.use(morgan('dev'));
 
 app.get('/schedules', (req, res) => {
@@ -29,7 +36,7 @@ app.get('/schedules', (req, res) => {
 					return { ...row, documents: parseDoc };
 				});
 
-				return res.status(200).json({ data: filterRows });
+				return res.status(200).json(filterRows);
 			});
 		} else {
 			db.all(sql, [status], (err, rows) => {
@@ -41,7 +48,7 @@ app.get('/schedules', (req, res) => {
 					return { ...row, documents: parseDoc };
 				});
 
-				return res.status(200).json({ data: filterRows });
+				return res.status(200).json(filterRows);
 			});
 		}
 	} catch (error) {
@@ -85,9 +92,11 @@ app.post('/create-schedules', (req, res) => {
 	}
 });
 
-app.put('/set-schedule/:id', (req, res) => {
+app.post('/set-schedule/:id', (req, res) => {
 	const { id } = req.params;
 	const { scheduled_at } = req.body;
+
+	console.log(req.body);
 	try {
 		const sql = `UPDATE User SET scheduled_at = ?, status = 'completed' WHERE id = ?`;
 		db.run(sql, [scheduled_at, id], (err) => {
