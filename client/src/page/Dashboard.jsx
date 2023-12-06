@@ -263,50 +263,42 @@ const Dashboard = () => {
 											</tr>
 										</thead>
 										<tbody className='bg-white divide-y divide-gray-200'>
-											{Array.isArray(appoinment) ? (
-												appoinment.map((appmnt, index) => (
-													<tr key={appmnt?.id}>
-														<td className='px-4 py-4 text-sm font-medium whitespace-nowrap'>
-															<span className='font-medium text-gray-800'>#{index + 1}</span>
-														</td>
+											{appoinment.map((appmnt, index) => (
+												<tr key={appmnt?.id}>
+													<td className='px-4 py-4 text-sm font-medium whitespace-nowrap'>
+														<span className='font-medium text-gray-800'>#{index + 1}</span>
+													</td>
 
-														<td className='px-4 py-4 text-sm whitespace-nowrap'>
-															<span className='text-gray-500 uppercase'>
-																{appmnt?.last_name}, {appmnt?.first_name} {appmnt?.middle_name}.
-															</span>
-														</td>
-														<td className='px-12 py-4 text-sm font-medium whitespace-nowrap'>
-															{appmnt.status === 'pending' ? (
-																<div className='inline font-semibold px-4 py-1 text-sm rounded-full capitalize text-orange-500  bg-orange-100/60'>{appmnt?.status}</div>
-															) : appmnt.status === 'completed' ? (
-																<div className='inline font-semibold px-4 py-1 text-sm rounded-full capitalize text-green-500  bg-green-100/60'>{appmnt?.status}</div>
-															) : null}
-														</td>
-														<td className='px-4 py-4 text-sm whitespace-nowrap'>
-															<div className='flex gap-2'>
-																<button
-																	className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5'
-																	onClick={() => handleSeeInfoModal(appmnt)}
-																>
-																	See info
-																</button>
-																<button
-																	className='text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5'
-																	onClick={() => handleSetScheduleModal(appmnt)}
-																>
-																	Set Schedule
-																</button>
-															</div>
-														</td>
-													</tr>
-												))
-											) : (
-												<tr>
-													<td colSpan={4} className='py-5 text-gray-500 text-sm text-center'>
-														No Appoinment in this field
+													<td className='px-4 py-4 text-sm whitespace-nowrap'>
+														<span className='text-gray-500 uppercase'>
+															{appmnt?.last_name}, {appmnt?.first_name} {appmnt?.middle_name}.
+														</span>
+													</td>
+													<td className='px-12 py-4 text-sm font-medium whitespace-nowrap'>
+														{appmnt.status === 'pending' ? (
+															<div className='inline font-semibold px-4 py-1 text-sm rounded-full capitalize text-orange-500  bg-orange-100/60'>{appmnt?.status}</div>
+														) : appmnt.status === 'completed' ? (
+															<div className='inline font-semibold px-4 py-1 text-sm rounded-full capitalize text-green-500  bg-green-100/60'>{appmnt?.status}</div>
+														) : null}
+													</td>
+													<td className='px-4 py-4 text-sm whitespace-nowrap'>
+														<div className='flex gap-2'>
+															<button
+																className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5'
+																onClick={() => handleSeeInfoModal(appmnt)}
+															>
+																See info
+															</button>
+															<button
+																className='text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5'
+																onClick={() => handleSetScheduleModal(appmnt)}
+															>
+																Set Schedule
+															</button>
+														</div>
 													</td>
 												</tr>
-											)}
+											))}
 										</tbody>
 									</table>
 								</div>
