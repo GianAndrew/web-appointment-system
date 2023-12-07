@@ -16,6 +16,8 @@ const Dashboard = () => {
 	const [userInfo, setUserInfo] = useState({});
 	const [date, setDate] = useState(new Date());
 	const [userId, setUserId] = useState(0);
+	const [isError, setIsError] = useState(false);
+	const [error, setError] = useState('');
 
 	const handleSeeInfoModal = (data) => {
 		setUserInfo(data);
@@ -56,10 +58,20 @@ const Dashboard = () => {
 		const fetchAllAppoiment = async () => {
 			const result = await fetch('http://localhost:3001/schedules');
 			const data = await result.json();
-			setAppointment(data);
+			if (result.ok) {
+				setIsError(false);
+				setError('');
+				return setAppointment(data);
+			} else {
+				setIsError(true);
+				setError('this field is empty.');
+				throw new Error('this field is empty.');
+			}
 		};
 		fetchAllAppoiment();
 	}, []);
+
+	console.log({ isArray: Array.isArray(appointment), length: appointment.length === 0 });
 
 	return (
 		<>
@@ -261,7 +273,13 @@ const Dashboard = () => {
 											</tr>
 										</thead>
 										<tbody className='bg-white divide-y divide-gray-200'>
-											{Array.isArray(appointment) ? (
+											{appointment.length === 0 ? (
+												<tr>
+													<td colSpan={4} className='py-4 text-center text-sm text-gray-500'>
+														No appointment.
+													</td>
+												</tr>
+											) : Array.isArray(appointment) ? (
 												appointment.map((appmnt, index) => (
 													<tr key={appmnt?.id}>
 														<td className='px-4 py-4 text-sm font-medium whitespace-nowrap'>
@@ -301,7 +319,7 @@ const Dashboard = () => {
 											) : (
 												<tr>
 													<td colSpan={4} className='py-4 text-center text-sm text-gray-500'>
-														No appointment.
+														Something went wrong
 													</td>
 												</tr>
 											)}
